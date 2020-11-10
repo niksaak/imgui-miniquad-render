@@ -65,7 +65,7 @@ impl Stage {
         on_init: Option<Box<dyn FnOnce(&mut imgui::Context)>>,
         on_quit: Option<Box<dyn FnOnce()>>,
     ) -> Stage {
-        let shader = Shader::new(&mut ctx, shader::VERTEX, shader::FRAGMENT, shader::META).unwrap();
+        let shader = Shader::new(&mut ctx, shader::VERTEX, shader::FRAGMENT, shader::meta()).unwrap();
 
         let pipeline = Pipeline::with_params(
             &mut ctx,
@@ -424,12 +424,14 @@ mod shader {
         gl_FragColor = color * texture2D(Texture, uv);
     }"#;
 
-    pub const META: ShaderMeta = ShaderMeta {
-        images: &["Texture"],
-        uniforms: UniformBlockLayout {
-            uniforms: &[UniformDesc::new("Projection", UniformType::Mat4)],
-        },
-    };
+    pub fn meta() -> ShaderMeta {
+        ShaderMeta {
+            images: vec!["Texture".to_owned()],
+            uniforms: UniformBlockLayout {
+                uniforms: vec![UniformDesc::new("Projection", UniformType::Mat4)],
+            },
+        }
+    }
 
     #[repr(C)]
     #[derive(Debug)]
